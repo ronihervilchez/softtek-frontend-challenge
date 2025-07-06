@@ -23,7 +23,6 @@ import {
   Calendar,
   Eye,
   Camera,
-  Clock,
   FileText,
   Star,
 } from "lucide-react";
@@ -32,6 +31,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import mockData from "@/mocks/fusionados-mock.json";
+import mockHistory from "@/mocks/historial-mock.json";
+import { History } from "../interfaces/history.interface";
 
 interface Person {
   id?: number;
@@ -481,91 +482,20 @@ function HistorySection() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // Datos de ejemplo para el historial
-  const historyData = [
-    {
-      id: 1,
-      action: "Visualizó personaje",
-      character: "Luke Skywalker",
-      date: "2024-01-15",
-      time: "14:30",
-      category: "Jedi",
-      color: "bg-blue-500",
-    },
-    {
-      id: 2,
-      action: "Visualizó personaje",
-      character: "Darth Vader",
-      date: "2024-01-15",
-      time: "14:25",
-      category: "Sith",
-      color: "bg-red-500",
-    },
-    {
-      id: 3,
-      action: "Editó perfil",
-      character: "Perfil personal",
-      date: "2024-01-15",
-      time: "13:45",
-      category: "Configuración",
-      color: "bg-blue-500",
-    },
-    {
-      id: 4,
-      action: "Visualizó personaje",
-      character: "Princess Leia",
-      date: "2024-01-14",
-      time: "16:20",
-      category: "Rebel",
-      color: "bg-green-500",
-    },
-    {
-      id: 5,
-      action: "Visualizó personaje",
-      character: "Han Solo",
-      date: "2024-01-14",
-      time: "15:10",
-      category: "Smuggler",
-      color: "bg-yellow-500",
-    },
-    {
-      id: 6,
-      action: "Visualizó personaje",
-      character: "Yoda",
-      date: "2024-01-14",
-      time: "14:55",
-      category: "Jedi Master",
-      color: "bg-green-500",
-    },
-    {
-      id: 7,
-      action: "Visualizó personaje",
-      character: "C-3PO",
-      date: "2024-01-13",
-      time: "18:30",
-      category: "Droid",
-      color: "bg-gray-500",
-    },
-    {
-      id: 8,
-      action: "Inició sesión",
-      character: "Sistema",
-      date: "2024-01-13",
-      time: "18:00",
-      category: "Sesión",
-      color: "bg-gray-500",
-    },
-  ];
+  // Procesar datos del historial y ordenar por fecha descendente
+  const historyData: History[] = mockHistory
+    .map((item, index) => ({
+      id: item.id ?? `query-${index + 1}`,
+      fechaCreacion: item.fechaCreacion,
+      personas: item.people,
+    }))
+    .sort((a, b) => new Date(b.fechaCreacion ?? '').getTime() - new Date(a.fechaCreacion ?? '').getTime());
 
   // Calcular paginación
   const totalPages = Math.ceil(historyData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = historyData.slice(startIndex, endIndex);
-
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const goToPrevious = () => {
     if (currentPage > 1) {
@@ -579,28 +509,26 @@ function HistorySection() {
     }
   };
 
-  const getActionIcon = (action: string) => {
-    switch (action) {
-      case "Visualizó personaje":
-        return <Eye className="h-4 w-4" />;
-      case "Editó perfil":
-        return <Edit className="h-4 w-4" />;
-      case "Inició sesión":
-        return <Clock className="h-4 w-4" />;
-      default:
-        return <FileText className="h-4 w-4" />;
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
     <div className="container mx-auto px-6 py-8 max-w-6xl">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-2">Historial de Actividad</h2>
-        <p className="text-muted-foreground">Revisa tu actividad reciente en la plataforma</p>
+        <h2 className="text-2xl font-bold mb-2">Historial de Consultas</h2>
+        <p className="text-muted-foreground">
+          Revisa las consultas realizadas anteriormente en la plataforma
+        </p>
       </div>
 
-      {/* Lista de actividades */}
-
+      {/* Lista de consultas */}
       <div className="space-y-4">
         {currentItems.map((item) => (
           <div
@@ -608,26 +536,32 @@ function HistorySection() {
             className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div className="flex items-center gap-4">
-              <div className={`p-2 rounded-lg ${item.color}/10`}>{getActionIcon(item.action)}</div>
+              <div className="p-2 rounded-lg bg-primary/10">
+                <FileText className="h-4 w-4 text-primary" />
+              </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">{item.action}</span>
+                  <span className="font-medium">Consulta #{item.id}</span>
                   <Badge variant="outline" className="text-xs">
-                    {item.category}
+                    {item.personas.length} {item.personas.length === 1 ? "persona" : "personas"}
                   </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">{item.character}</p>
+                <p className="text-sm text-muted-foreground">
+                  {item.personas.length > 0
+                    ? (() => {
+                        const additionalCount = item.personas.length - 2;
+                        const namesPreview = item.personas.slice(0, 2).map(p => p.nombre).join(", ");
+                        const additionalText = additionalCount > 0 ? ` y ${additionalCount} más` : "";
+                        return `Incluye: ${namesPreview}${additionalText}`;
+                      })()
+                    : "Sin personajes"}
+                </p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-sm font-medium">
-                {new Date(item.date).toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
+                {formatDate(item.fechaCreacion ?? '')}
               </p>
-              <p className="text-xs text-muted-foreground">{item.time}</p>
             </div>
           </div>
         ))}
@@ -639,6 +573,10 @@ function HistorySection() {
           <ChevronLeft className="h-4 w-4" />
           Anterior
         </Button>
+
+        <div className="text-sm text-muted-foreground">
+          Página {currentPage} de {totalPages}
+        </div>
 
         <Button variant="outline" size="sm" onClick={goToNext} disabled={currentPage === totalPages}>
           Siguiente
