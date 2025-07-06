@@ -1,6 +1,6 @@
 import { Person } from "./person.interface";
 
-export interface History {
+export interface IHistory {
   id?: string | number;
   fechaCreacion?: string;
   personas: Person[];
