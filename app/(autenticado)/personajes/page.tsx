@@ -1,3 +1,5 @@
+'use client';
+
 import mockData from "@/mocks/fusionados-mock.json";
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import { Film, Globe, GraduationCap, Ruler, User, Users, Weight } from "lucide-react";
@@ -6,20 +8,20 @@ import { useState } from "react";
 import { Badge } from "../../../components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { DialogHeader } from "../../../components/ui/dialog";
-import { Person } from "../../../interfaces/person.interface";
+import { IPerson } from "../../../interfaces/person.interface";
 
 export default function PersonCards() {
-  const people: Person[] = mockData.fusionados.map((person, index) => ({
+  const people: IPerson[] = mockData.fusionados.map((person, index) => ({
     id: index + 1,
     ...person,
   }));
 
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  const [customPersonList] = useState<Person[]>(people);
+  const [selectedPerson, setSelectedPerson] = useState<IPerson | null>(null);
+  const [customPersonList] = useState<IPerson[]>(people);
 
   const allPeople = [...people, ...customPersonList];
 
-  const openPersonDetail = (person: Person) => {
+  const openPersonDetail = (person: IPerson) => {
     setSelectedPerson(person);
   };
 
@@ -27,7 +29,7 @@ export default function PersonCards() {
     setSelectedPerson(null);
   };
 
-  const getDescription = (person: Person) => {
+  const getDescription = (person: IPerson) => {
     const maestrosText =
       person.maestros.length > 0 ? `Maestros: ${person.maestros.join(", ")}` : "Sin maestros conocidos";
     const aprendicesText =

@@ -1,3 +1,5 @@
+'use client';
+
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Eye, Star, Calendar, Camera, Mail, MapPin, Save, Edit } from "lucide-react";
 import { useState } from "react";
