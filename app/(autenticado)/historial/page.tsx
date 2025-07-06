@@ -1,30 +1,27 @@
-'use client';
+"use client";
 
-import { FileText, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
-import mockHistory from "@/mocks/historial-mock.json";
+import axios from "axios";
+import { ChevronLeft, FileText } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { IHistory } from "../../../interfaces/history.interface";
 
 export default function History() {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const [historyList, setHistoryList] = useState<Record<number, IHistory[]>>({});
 
-  // Procesar datos del historial y ordenar por fecha descendente
-  const historyData: IHistory[] = mockHistory
-    .map((item, index) => ({
-      id: item.id ?? `query-${index + 1}`,
-      fechaCreacion: item.fechaCreacion,
-      personas: item.people,
-    }))
-    .sort((a, b) => new Date(b.fechaCreacion ?? "").getTime() - new Date(a.fechaCreacion ?? "").getTime());
-
-  // Calcular paginación
-  const totalPages = Math.ceil(historyData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = historyData.slice(startIndex, endIndex);
+  useEffect(() => {
+    axios
+      .get("/api/historial")
+      .then((response) => {
+        const history: IHistory[] = response.data;
+        setHistoryList({ ...historyList, [currentPage]: history });
+      })
+      .catch((error) => {
+        console.error("Error fetching personas:", error);
+      });
+  }, [currentPage]);
 
   const goToPrevious = () => {
     if (currentPage > 1) {
@@ -32,11 +29,11 @@ export default function History() {
     }
   };
 
-  const goToNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  // const goToNext = () => {
+  //   if (currentPage < totalPages) {
+  //     setCurrentPage(currentPage + 1);
+  //   }
+  // };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-ES", {
@@ -59,7 +56,7 @@ export default function History() {
 
       {/* Lista de consultas */}
       <div className="space-y-4">
-        {currentItems.map((item) => (
+        {historyList[currentPage]?.map((item) => (
           <div
             key={item.id}
             className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
@@ -104,14 +101,10 @@ export default function History() {
           Anterior
         </Button>
 
-        <div className="text-sm text-muted-foreground">
-          Página {currentPage} de {totalPages}
-        </div>
-
-        <Button variant="outline" size="sm" onClick={goToNext} disabled={currentPage === totalPages}>
+        {/* <Button variant="outline" size="sm" onClick={goToNext} disabled={currentPage === totalPages}>
           Siguiente
           <ChevronRight className="h-4 w-4" />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

@@ -1,28 +1,26 @@
-{
-  "fusionados": [
-    {
-      "nombre": "Luke Skywalker",
-      "altura": 172,
-      "peso": 73,
-      "genero": "male",
-      "especie": "Human",
-      "planeta": "tatooine",
-      "peliculas": [
-        "A New Hope",
-        "The Empire Strikes Back",
-        "Return of the Jedi",
-        "Revenge of the Sith"
-      ],
-      "maestros": [
-        "Obi-Wan Kenobi",
-        "Yoda"
-      ],
-      "aprendices": [
-        "Leia Organa",
-        "Ben Solo",
-        "Rey"
-      ],
-      "imagen": "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg"
-    }
-  ]
-}
+[
+  {
+    "nombre": "Luke Skywalker",
+    "altura": 172,
+    "peso": 73,
+    "genero": "male",
+    "especie": "Human",
+    "planeta": "tatooine",
+    "peliculas": [
+      "A New Hope",
+      "The Empire Strikes Back",
+      "Return of the Jedi",
+      "Revenge of the Sith"
+    ],
+    "maestros": [
+      "Obi-Wan Kenobi",
+      "Yoda"
+    ],
+    "aprendices": [
+      "Leia Organa",
+      "Ben Solo",
+      "Rey"
+    ],
+    "imagen": "https://vignette.wikia.nocookie.net/starwars/images/2/20/LukeTLJ.jpg"
+  }
+]

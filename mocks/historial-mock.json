@@ -1,7 +1,7 @@
 [{
   "id": "a2id-1",
   "fechaCreacion": "2023-10-01T12:00:00Z",
-  "people": [
+  "personas": [
     {
       "nombre": "Luke Skywalker",
       "altura": 172,
@@ -54,7 +54,7 @@
 },{
   "id": "a2id-2",
   "fechaCreacion": "2023-10-01T12:31:00Z",
-  "people": [
+  "personas": [
     {
       "nombre": "Luke Skywalker",
       "altura": 172,

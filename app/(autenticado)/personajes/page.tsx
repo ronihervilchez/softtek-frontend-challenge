@@ -1,25 +1,31 @@
-'use client';
+"use client";
 
 import mockData from "@/mocks/fusionados-mock.json";
 import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import { Film, Globe, GraduationCap, Ruler, User, Users, Weight } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "../../../components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { DialogHeader } from "../../../components/ui/dialog";
 import { IPerson } from "../../../interfaces/person.interface";
+import axios from "axios";
 
 export default function PersonCards() {
-  const people: IPerson[] = mockData.fusionados.map((person, index) => ({
-    id: index + 1,
-    ...person,
-  }));
-
   const [selectedPerson, setSelectedPerson] = useState<IPerson | null>(null);
-  const [customPersonList] = useState<IPerson[]>(people);
+  const [customPersonList, setPersonList] = useState<IPerson[]>([]);
 
-  const allPeople = [...people, ...customPersonList];
+  useEffect(() => {
+    axios
+      .get("/api/personajes")
+      .then((response) => {
+        const personas: IPerson[] = response.data;
+        setPersonList(personas);
+      })
+      .catch((error) => {
+        console.error("Error fetching personas:", error);
+      });
+  }, []);
 
   const openPersonDetail = (person: IPerson) => {
     setSelectedPerson(person);
@@ -52,15 +58,6 @@ export default function PersonCards() {
     }
   };
 
-  // // Renderizar la sección activa
-  // if (activeSection === "profile") {
-  //   return <ProfileSection />;
-  // }
-
-  // if (activeSection === "history") {
-  //   return <HistorySection />;
-  // }
-
   // Vista por defecto: Galería
   return (
     <div className="container mx-auto px-4 py-8">
@@ -72,7 +69,7 @@ export default function PersonCards() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {allPeople.map((person) => (
+        {customPersonList.map((person) => (
           <Card
             key={person.id}
             className="flex group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden"
