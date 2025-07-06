@@ -1,39 +1,57 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Moon, Sun, User, GalleryThumbnailsIcon as Gallery, Home, Menu, X, Clock } from "lucide-react"
-import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Clock, GalleryThumbnailsIcon as Gallery, Home, Menu, Moon, Sun, User, X } from "lucide-react";
+import { useTheme } from "next-themes";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 interface MainLayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
-  const { theme, setTheme } = useTheme()
-  const [activeSection, setActiveSection] = useState("gallery")
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
+  const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Determinar la sección activa basada en la ruta
+  const getActiveSection = () => {
+    if (pathname.includes("/personajes")) return "gallery";
+    if (pathname.includes("/perfil")) return "profile";
+    if (pathname.includes("/historial")) return "history";
+    return "gallery";
+  };
+
+  const activeSection = getActiveSection();
 
   const navigationItems = [
     {
       id: "profile",
       label: "Mi Perfil",
       icon: User,
+      path: "/perfil",
     },
     {
       id: "gallery",
-      label: "Galería de Héroes",
+      label: "Galería de Personajes",
       icon: Gallery,
+      path: "/personajes",
     },
     {
       id: "history",
       label: "Historial",
       icon: Clock,
+      path: "/historial",
     },
-  ]
+  ];
+
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
 
   return (
     <div className="flex h-screen bg-background">
@@ -41,7 +59,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <div
         className={cn(
           "bg-card border-r border-border flex flex-col transition-all duration-300 ease-in-out",
-          sidebarOpen ? "w-64" : "w-0 overflow-hidden",
+          sidebarOpen ? "w-64" : "w-0 overflow-hidden"
         )}
       >
         <div className="p-6 border-b border-border">
@@ -51,7 +69,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                 <Home className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h2 className="font-bold text-lg">Hero Gallery</h2>
+                <h2 className="font-bold text-lg">Star Wars Gallery</h2>
                 <p className="text-sm text-muted-foreground">Tu colección personal</p>
               </div>
             </div>
@@ -64,21 +82,21 @@ export default function MainLayout({ children }: MainLayoutProps) {
         <nav className="flex-1 p-4">
           <div className="space-y-2">
             {navigationItems.map((item) => {
-              const Icon = item.icon
+              const Icon = item.icon;
               return (
                 <Button
                   key={item.id}
                   variant={activeSection === item.id ? "default" : "ghost"}
                   className={cn(
                     "w-full justify-start gap-3 h-12",
-                    activeSection === item.id && "bg-primary text-primary-foreground",
+                    activeSection === item.id && "bg-primary text-primary-foreground"
                   )}
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={() => handleNavigation(item.path)}
                 >
                   <Icon className="h-5 w-5" />
                   {item.label}
                 </Button>
-              )
+              );
             })}
           </div>
         </nav>
@@ -91,7 +109,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               {!sidebarOpen && (
-                <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="h-10 w-10">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSidebarOpen(true)}
+                  className="h-10 w-10"
+                >
                   <Menu className="h-5 w-5" />
                 </Button>
               )}
@@ -99,12 +122,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
               <div>
                 <h1 className="text-2xl font-bold">
                   {activeSection === "profile" && "Mi Perfil"}
-                  {activeSection === "gallery" && "Galería de Héroes"}
+                  {activeSection === "gallery" && "Galería de Personajes"}
                   {activeSection === "history" && "Historial"}
                 </h1>
                 <p className="text-muted-foreground">
                   {activeSection === "profile" && "Gestiona tu información personal"}
-                  {activeSection === "gallery" && "Explora tu colección de héroes"}
+                  {activeSection === "gallery" && "Explora tu colección de personajes"}
                   {activeSection === "history" && "Revisa tu actividad reciente"}
                 </p>
               </div>
@@ -124,7 +147,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
               <div className="text-right">
                 <p className="font-medium">Alex Rodriguez</p>
-                <p className="text-sm text-muted-foreground">Coleccionista de Héroes</p>
+                <p className="text-sm text-muted-foreground">Fan de Star Wars</p>
               </div>
 
               <Avatar className="h-12 w-12">
@@ -136,10 +159,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-auto">
-          {React.cloneElement(children as React.ReactElement, { activeSection })}
-        </main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
-  )
+  );
 }
