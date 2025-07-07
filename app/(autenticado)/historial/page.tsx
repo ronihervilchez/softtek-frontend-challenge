@@ -1,15 +1,20 @@
 "use client";
 
 import axios from "axios";
-import { ChevronLeft, FileText } from "lucide-react";
+import { ChevronLeft, Eye } from "lucide-react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { IHistory } from "../../../interfaces/history.interface";
+import { agregarPersonas } from "../../redux/reducers/personas-slice";
 
 export default function History() {
   const [currentPage, setCurrentPage] = useState(1);
   const [historyList, setHistoryList] = useState<Record<number, IHistory[]>>({});
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -62,8 +67,14 @@ export default function History() {
             className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div className="flex items-center gap-4">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <FileText className="h-4 w-4 text-primary" />
+              <div
+                className="p-2 rounded-lg bg-primary/10 cursor-pointer"
+                onClick={() => {
+                  dispatch(agregarPersonas(item.personas));
+                  router.push(`historial/detalle`);
+                }}
+              >
+                <Eye className="h-4 w-4 text-primary" />
               </div>
               <div>
                 <div className="flex items-center gap-2">

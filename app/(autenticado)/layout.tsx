@@ -1,8 +1,8 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import "@/styles/globals.css";
 import type { Metadata } from "next";
 import type React from "react";
 import MainLayout from "../../components/main-layout";
-import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Hero Gallery App",
