@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { ChevronLeft, Eye } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Badge } from "../../../components/ui/badge";

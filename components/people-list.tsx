@@ -53,7 +53,7 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {people.map((person) => (
           <Card
-            key={person.id}
+            key={person.nombre}
             className="flex group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden"
             onClick={() => openPersonDetail(person)}
           >
