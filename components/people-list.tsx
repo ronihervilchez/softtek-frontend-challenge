@@ -63,7 +63,7 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
                 alt={person.nombre}
                 width={300}
                 height={256}
-                className="w-[300px] h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-[300px] h-64 object-cover"
               />
               <div className="absolute top-4 right-4">
                 <Badge className={`${getSpeciesColor(person.especie)} text-white border-0`}>
