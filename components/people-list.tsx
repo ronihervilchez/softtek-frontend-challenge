@@ -1,11 +1,10 @@
-import { Dialog, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
 import { Film, Globe, GraduationCap, Ruler, User, Users, Weight } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { IPerson } from "../interfaces/person.interface";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { DialogHeader } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 export default function PeopleList({ people }: { readonly people: IPerson[] }) {
   const [selectedPerson, setSelectedPerson] = useState<IPerson | null>(null);
@@ -43,13 +42,6 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Galería de Personajes</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Descubre a los personajes más legendarios de Star Wars y conoce sus historias
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {people.map((person) => (
           <Card
@@ -87,12 +79,6 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
             </div>
           </Card>
         ))}
-      </div>
-
-      <div className="text-center mt-12">
-        <p className="text-muted-foreground">
-          ¿Tienes un personaje favorito? ¡Descubre más sobre sus aventuras!
-        </p>
       </div>
 
       <Dialog open={!!selectedPerson} onOpenChange={closePersonDetail}>

@@ -21,5 +21,15 @@ export default function PersonCards() {
   }, []);
 
   // Vista por defecto: Galería
-  return <PeopleList people={customPersonList}></PeopleList>;
+  return (
+    <div>
+      <div className="text-center mb-12 mt-5">
+        <h1 className="text-4xl font-bold mb-4">Galería de Personajes</h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          Descubre a los personajes más legendarios de Star Wars y conoce sus historias
+        </p>
+      </div>
+      <PeopleList people={customPersonList}></PeopleList>
+    </div>
+  );
 }
