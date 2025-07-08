@@ -18,8 +18,12 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                 <p className="text-balance text-muted-foreground">Join Acme Inc today</p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" type="text" placeholder="John Doe" required />
+                <Label htmlFor="name">Nombres</Label>
+                <Input id="name" type="text" placeholder="Ingresa tu nombre" required />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="name">Apellidos</Label>
+                <Input id="name" type="text" placeholder="Ingresa tu apellido" required />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
