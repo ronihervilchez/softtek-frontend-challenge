@@ -3,8 +3,10 @@ import axios from "axios";
 import AppConfig from "@/lib/config";
 import { ISignIn } from "../../../interfaces/signin.interface";
 
-export async function POST(datos: ISignIn) {
+export async function POST(request: Request) {
   try {
+    const datos: ISignIn = await request.json();
+
     // Validación básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(datos.email)) {

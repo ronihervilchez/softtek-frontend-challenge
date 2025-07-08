@@ -75,3 +75,33 @@ export function clearCorruptedLocalStorage() {
     });
   }
 }
+
+export function getAuthToken(): string | null {
+  if (typeof window !== "undefined") {
+    try {
+      const authData = getLocalStorage("auth");
+      if (authData) {
+        const parsed = JSON.parse(authData);
+        // Extraer el token del objeto guardado
+        return parsed.data?.token ?? null;
+      }
+    } catch (error) {
+      console.error("Error parsing auth data:", error);
+      removeLocalStorage("auth");
+    }
+  }
+  return null;
+}
+
+export function getAuthHeaders(): Record<string, string> {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return headers;
+}
