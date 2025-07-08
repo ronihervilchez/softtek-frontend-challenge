@@ -47,13 +47,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                     return;
                   }
                   axios
-                    .post("/api/auth/login", {
-                      usuario: usuario.current.value,
+                    .post("/api/login", {
+                      email: usuario.current.value,
                       password: password.current.value,
                     })
                     .then((response) => {
                       if (response.data) {
-                        setLocalStorage("user", JSON.stringify(response.data));
+                        setLocalStorage("auth", JSON.stringify(response.data));
                         router.push("/personajes");
                       } else {
                         alert("Login failed: " + response.data.message);

@@ -22,9 +22,9 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = getLocalStorage("user");
-    router.push(user ? "/personajes" : "/auth/login");
-    if (user) setLoading(false);
+    const auth = getLocalStorage("auth");
+    router.push(auth ? "/personajes" : "/auth/login");
+    if (auth) setLoading(false);
   }, [router]);
 
   // Determinar la sección activa basada en la ruta

@@ -9,23 +9,69 @@ export function cn(...inputs: ClassValue[]) {
 
 export function setLocalStorage(key: string, value: string) {
   if (typeof window !== "undefined") {
-    const valueEncripted = CryptoJS.AES.encrypt(value, AppConfig.ENCRYPTED_KEY).toString();
-    localStorage.setItem(key, valueEncripted);
+    try {
+      const valueEncripted = CryptoJS.AES.encrypt(value, AppConfig.ENCRYPTED_KEY).toString();
+      localStorage.setItem(key, valueEncripted);
+    } catch (error) {
+      console.error("Error al encriptar:", error);
+      // Fallback: guardar sin encriptar
+      localStorage.setItem(key, value);
+    }
   }
 }
 
-export function getLocalStorage(key: string) {
+export function getLocalStorage(key: string): string | null {
   if (typeof window !== "undefined") {
-    const encriptedValue = localStorage.getItem(key);
-    const decriptedValue = encriptedValue
-      ? CryptoJS.AES.decrypt(encriptedValue, AppConfig.ENCRYPTED_KEY).toString(CryptoJS.enc.Utf8)
-      : null;
-    return decriptedValue;
+    try {
+      const encriptedValue = localStorage.getItem(key);
+      if (!encriptedValue) {
+        return null;
+      }
+
+      // Intentar desencriptar
+      const decriptedBytes = CryptoJS.AES.decrypt(encriptedValue, AppConfig.ENCRYPTED_KEY);
+      const decriptedValue = decriptedBytes.toString(CryptoJS.enc.Utf8);
+
+      // Verificar si la desencriptación fue exitosa
+      if (!decriptedValue) {
+        console.warn("No se pudo desencriptar el valor, posible dato corrupto");
+        // Limpiar el valor corrupto
+        localStorage.removeItem(key);
+        return null;
+      }
+
+      return decriptedValue;
+    } catch (error) {
+      console.error("Error al desencriptar:", error);
+      // Limpiar el valor corrupto y devolver null
+      localStorage.removeItem(key);
+      return null;
+    }
   }
+  return null;
 }
 
 export function removeLocalStorage(key: string) {
   if (typeof window !== "undefined") {
     localStorage.removeItem(key);
+  }
+}
+
+// Función auxiliar para limpiar todos los datos corruptos
+export function clearCorruptedLocalStorage() {
+  if (typeof window !== "undefined") {
+    const keys = Object.keys(localStorage);
+    keys.forEach((key) => {
+      try {
+        const value = localStorage.getItem(key);
+        if (value) {
+          // Intentar desencriptar para verificar si está corrupto
+          CryptoJS.AES.decrypt(value, AppConfig.ENCRYPTED_KEY).toString(CryptoJS.enc.Utf8);
+        }
+      } catch (error) {
+        console.warn(`Removiendo dato corrupto: ${key}`);
+        localStorage.removeItem(key);
+      }
+    });
   }
 }

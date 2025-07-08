@@ -8,10 +8,9 @@ interface ApiEndpoints {
   loginUrl(): string;
   signupUrl(): string;
   personajesUrl(): string;
-  historialUrl(): string;
-  perfilUrl(): string;
-  historialDetalleUrl(id: string): string;
-  personajeDetalleUrl(id: string): string;
+  historialUrl(limit: number): string;
+  actualizarPerfilUrl(): string;
+  obtenerPerfilUrl(): string;
 }
 
 class AppConfig {
@@ -54,4 +53,4 @@ class AppConfig {
 }
 
 export default AppConfig;
-export type { AppConfiguration };
+export type { AppConfiguration, ApiEndpoints };
