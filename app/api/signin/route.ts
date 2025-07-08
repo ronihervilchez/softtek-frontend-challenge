@@ -29,7 +29,7 @@ export async function POST(datos: ISignIn) {
       // Error del backend (409 usuario existe, 400 datos inválidos, etc.)
       return NextResponse.json(
         {
-          error: error.response.data?.message || "Error al registrar usuario",
+          error: error.response.data?.message ?? "Error al registrar usuario",
           success: false,
         },
         { status: error.response.status }
