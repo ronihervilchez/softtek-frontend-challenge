@@ -7,7 +7,6 @@ export async function GET(request: Request) {
   try {
     // Obtener el token del header Authorization
     const authHeader = request.headers.get("authorization");
-    console.log(`🚀 ~ route.ts:10 ~ authHeader:`, authHeader)
 
     if (!authHeader) {
       return NextResponse.json({ error: "Token de autorización requerido" }, { status: 401 });
