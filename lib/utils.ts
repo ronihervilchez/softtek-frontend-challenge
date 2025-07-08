@@ -82,7 +82,6 @@ export function getAuthToken(): string | null {
       const authData = getLocalStorage("auth");
       if (authData) {
         const parsed = JSON.parse(authData);
-        // Extraer el token del objeto guardado
         return parsed.data?.token ?? null;
       }
     } catch (error) {

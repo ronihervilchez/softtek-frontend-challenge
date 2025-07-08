@@ -74,7 +74,7 @@ export default function PersonCards() {
           Descubre a los personajes más legendarios de Star Wars y conoce sus historias
         </p>
       </div>
-      <PeopleList people={customPersonList as ILoginResponse<IPerson[]>}></PeopleList>
+      <PeopleList people={customPersonList!.data}></PeopleList>
     </div>
   );
 }

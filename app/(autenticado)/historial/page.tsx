@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
+import { ILoginResponse } from "../../../interfaces/api-response.interface";
 import { IHistoryList } from "../../../interfaces/history.interface";
 import { agregarPersonas } from "../../redux/reducers/personas-slice";
 
@@ -39,21 +40,24 @@ export default function History() {
         setLoading(true);
         setError(null);
 
-        // Construir query parameters
-        const queryParams = new URLSearchParams();
-        queryParams.append('limit', limit.toString());
+        // Construir el body para la request
+        const requestBody: any = {
+          limit: limit,
+        };
 
-        // Si no es la primera página, obtener lastEvaluatedKey de la página anterior
-        if (currentPage > 1 && historyList[currentPage - 1]?.lastEvaluatedKey) {
-          queryParams.append('lastEvaluatedKey', JSON.stringify(historyList[currentPage - 1].lastEvaluatedKey));
+        // Para cargar la página siguiente, usar el lastEvaluatedKey de la página anterior
+        // (que ya está cargada y me dice dónde continuar)
+        const currentPageData = historyList[currentPage] as IHistoryList | undefined;
+        if (currentPageData?.lastEvaluatedKey) {
+          requestBody.lastEvaluatedKey = currentPageData.lastEvaluatedKey;
         }
 
-        const response = await axios.get(`/api/historial?${queryParams.toString()}`, {
+        const response = await axios.post("/api/historial", requestBody, {
           headers: getAuthHeaders(),
         });
 
-        const history: IHistoryList = response.data;
-        setHistoryList(prev => ({ ...prev, [currentPage]: history }));
+        const history: ILoginResponse<IHistoryList> = response.data;
+        setHistoryList((prev) => ({ ...prev, [currentPage]: history.data }));
       } catch (error: any) {
         console.error("Error fetching historial:", error);
 
@@ -78,7 +82,8 @@ export default function History() {
   };
 
   const goToNext = () => {
-    if (historyList[currentPage].hasNextPage) {
+    const currentPageData = historyList[currentPage];
+    if (currentPageData?.hasNextPage) {
       setCurrentPage(currentPage + 1);
     }
   };

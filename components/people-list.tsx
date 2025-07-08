@@ -1,13 +1,12 @@
 import { Film, Globe, GraduationCap, Ruler, User, Users, Weight } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { ILoginResponse } from "../interfaces/api-response.interface";
 import { IPerson } from "../interfaces/person.interface";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
-export default function PeopleList({ people }: { readonly people: ILoginResponse<IPerson[]> }) {
+export default function PeopleList({ people }: { readonly people: IPerson[] }) {
   const [selectedPerson, setSelectedPerson] = useState<IPerson | null>(null);
 
   const openPersonDetail = (person: IPerson) => {
@@ -52,7 +51,7 @@ export default function PeopleList({ people }: { readonly people: ILoginResponse
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {people.data.map((person) => (
+        {people.map((person) => (
           <Card
             key={person.nombre}
             className="flex group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden"

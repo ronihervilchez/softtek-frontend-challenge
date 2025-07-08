@@ -8,7 +8,7 @@ interface ApiEndpoints {
   loginUrl(): string;
   signupUrl(): string;
   personajesUrl(): string;
-  historialUrl(limit: number): string;
+  historialUrl(): string;
   actualizarPerfilUrl(): string;
   obtenerPerfilUrl(): string;
 }
@@ -39,8 +39,8 @@ class AppConfig {
     return `${this.BACKEND_API}/fusionados`;
   }
 
-  static historialUrl(limit: number): string {
-    return `${this.BACKEND_API}/historial?limit=${limit}`;
+  static historialUrl(): string {
+    return `${this.BACKEND_API}/historial`;
   }
 
   static actualizarPerfilUrl(): string {
