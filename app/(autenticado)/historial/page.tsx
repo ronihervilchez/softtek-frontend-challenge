@@ -30,16 +30,30 @@ export default function History() {
           return;
         }
 
+        // Si ya tenemos datos para esta página, no hacer nueva request
+        if (historyList[currentPage]) {
+          setLoading(false);
+          return;
+        }
+
         setLoading(true);
         setError(null);
 
-        // Enviar limit como query parameter
-        const response = await axios.get(`/api/historial?limit=${limit}`, {
+        // Construir query parameters
+        const queryParams = new URLSearchParams();
+        queryParams.append('limit', limit.toString());
+
+        // Si no es la primera página, obtener lastEvaluatedKey de la página anterior
+        if (currentPage > 1 && historyList[currentPage - 1]?.lastEvaluatedKey) {
+          queryParams.append('lastEvaluatedKey', JSON.stringify(historyList[currentPage - 1].lastEvaluatedKey));
+        }
+
+        const response = await axios.get(`/api/historial?${queryParams.toString()}`, {
           headers: getAuthHeaders(),
         });
 
         const history: IHistoryList = response.data;
-        setHistoryList({ ...historyList, [currentPage]: history });
+        setHistoryList(prev => ({ ...prev, [currentPage]: history }));
       } catch (error: any) {
         console.error("Error fetching historial:", error);
 
@@ -55,7 +69,7 @@ export default function History() {
     };
 
     fetchHistorial();
-  }, [currentPage, limit, router]);
+  }, [currentPage, limit, router]); // Remover historyList de las dependencias
 
   const goToPrevious = () => {
     if (currentPage > 1) {

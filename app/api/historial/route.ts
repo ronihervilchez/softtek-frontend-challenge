@@ -12,12 +12,31 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Token de autorización requerido" }, { status: 401 });
     }
 
-    // Obtener limit de query params o usar 10 por defecto
+    // Obtener parámetros de query
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") ?? "10");
+    const lastEvaluatedKey = searchParams.get("lastEvaluatedKey");
 
-    // Usar la URL del config
-    const response = await axios.get(AppConfig.historialUrl(limit), {
+    // Construir la URL base del backend
+    const baseUrl = `${AppConfig.BACKEND_API}/historial`;
+    const backendUrl = new URL(baseUrl);
+    
+    // Agregar parámetros
+    backendUrl.searchParams.append('limit', limit.toString());
+    if (lastEvaluatedKey) {
+      backendUrl.searchParams.append('lastEvaluatedKey', lastEvaluatedKey);
+    }
+
+    const finalUrl = backendUrl.toString();
+
+    console.log('🔍 HISTORIAL REQUEST:');
+    console.log('Frontend URL:', request.url);
+    console.log('Backend URL:', finalUrl);
+    console.log('Limit:', limit);
+    console.log('LastEvaluatedKey:', lastEvaluatedKey ? 'Present' : 'None');
+
+    // Hacer la llamada al backend
+    const response = await axios.get(finalUrl, {
       headers: {
         "Content-Type": "application/json",
         Authorization: authHeader, // Usar el header completo "Bearer token"

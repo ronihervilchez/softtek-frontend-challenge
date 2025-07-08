@@ -1,7 +1,6 @@
 "use client";
 
 import { getAuthHeaders, getAuthToken } from "@/lib/utils";
-import { useAuthDebugger } from "@/hooks/useAuthDebugger";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,13 +9,10 @@ import { ILoginResponse } from "../../../interfaces/api-response.interface";
 import { IPerson } from "../../../interfaces/person.interface";
 
 export default function PersonCards() {
-  const [customPersonList, setPersonList] = useState<ILoginResponse<IPerson[]>>();
+  const [customPersonList, setCustomPersonList] = useState<ILoginResponse<IPerson[]>>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
-  // Debugging temporal - eliminar después
-  useAuthDebugger();
 
   useEffect(() => {
     const fetchPersonajes = async () => {
@@ -35,7 +31,7 @@ export default function PersonCards() {
         });
 
         const personas: ILoginResponse<IPerson[]> = response.data;
-        setPersonList(personas);
+        setCustomPersonList(personas);
       } catch (error: any) {
         console.error("Error fetching personas:", error);
 
