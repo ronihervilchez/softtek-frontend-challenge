@@ -17,7 +17,7 @@ export default function History() {
   const [historyList, setHistoryList] = useState<Record<number, IHistoryList>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [limit] = useState(3); // Límite de elementos por página
+  const [limit] = useState(4); // Límite de elementos por página
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -47,9 +47,9 @@ export default function History() {
 
         // Para cargar la página siguiente, usar el lastEvaluatedKey de la página anterior
         // (que ya está cargada y me dice dónde continuar)
-        const currentPageData = historyList[currentPage] as IHistoryList | undefined;
-        if (currentPageData?.lastEvaluatedKey) {
-          requestBody.lastEvaluatedKey = currentPageData.lastEvaluatedKey;
+        const previousPage = historyList[currentPage - 1] as IHistoryList | undefined;
+        if (previousPage?.lastEvaluatedKey) {
+          requestBody.lastEvaluatedKey = previousPage.lastEvaluatedKey;
         }
 
         const response = await axios.post("/api/historial", requestBody, {
