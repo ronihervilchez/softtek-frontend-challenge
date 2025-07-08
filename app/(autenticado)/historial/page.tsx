@@ -17,7 +17,7 @@ export default function History() {
   const [historyList, setHistoryList] = useState<Record<number, IHistoryList>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [limit] = useState(10); // Límite de elementos por página
+  const [limit] = useState(3); // Límite de elementos por página
   const router = useRouter();
   const dispatch = useDispatch();
 
