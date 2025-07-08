@@ -1,12 +1,13 @@
 import { Film, Globe, GraduationCap, Ruler, User, Users, Weight } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { ILoginResponse } from "../interfaces/api-response.interface";
 import { IPerson } from "../interfaces/person.interface";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
-export default function PeopleList({ people }: { readonly people: IPerson[] }) {
+export default function PeopleList({ people }: { readonly people: ILoginResponse<IPerson[]> }) {
   const [selectedPerson, setSelectedPerson] = useState<IPerson | null>(null);
 
   const openPersonDetail = (person: IPerson) => {
@@ -40,10 +41,18 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
     }
   };
 
+  // Función helper para validar URLs de imagen
+  const getValidImageSrc = (imagen: string | null | undefined) => {
+    if (!imagen || imagen.trim() === "") {
+      return "/placeholder.svg";
+    }
+    return imagen;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {people.map((person) => (
+        {people.data.map((person) => (
           <Card
             key={person.nombre}
             className="flex group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden"
@@ -51,11 +60,15 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
           >
             <div className="relative w-[300px] flex-shrink-0">
               <Image
-                src={person.imagen ?? "/placeholder.svg"}
+                src={getValidImageSrc(person.imagen)}
                 alt={person.nombre}
                 width={300}
                 height={256}
                 className="w-[300px] h-64 object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/placeholder.svg";
+                }}
               />
               <div className="absolute top-4 right-4">
                 <Badge className={`${getSpeciesColor(person.especie)} text-white border-0`}>
@@ -97,11 +110,15 @@ export default function PeopleList({ people }: { readonly people: IPerson[] }) {
               <div className="space-y-6">
                 <div className="relative">
                   <Image
-                    src={selectedPerson.imagen ?? "/placeholder.svg"}
+                    src={getValidImageSrc(selectedPerson.imagen)}
                     alt={selectedPerson.nombre}
                     width={400}
                     height={400}
                     className="w-full h-64 object-cover rounded-lg"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/placeholder.svg";
+                    }}
                   />
                 </div>
 

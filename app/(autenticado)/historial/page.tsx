@@ -1,5 +1,6 @@
 "use client";
 
+import { getAuthHeaders, getAuthToken } from "@/lib/utils";
 import axios from "axios";
 import { ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,20 +14,48 @@ import { agregarPersonas } from "../../redux/reducers/personas-slice";
 export default function History() {
   const [currentPage, setCurrentPage] = useState(1);
   const [historyList, setHistoryList] = useState<Record<number, IHistoryList>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [limit] = useState(10); // Límite de elementos por página
   const router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios
-      .get("/api/historial")
-      .then((response) => {
+    const fetchHistorial = async () => {
+      try {
+        // Verificar si está autenticado
+        const token = getAuthToken();
+        if (!token) {
+          router.push("/auth/login");
+          return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        // Enviar limit como query parameter
+        const response = await axios.get(`/api/historial?limit=${limit}`, {
+          headers: getAuthHeaders(),
+        });
+
         const history: IHistoryList = response.data;
         setHistoryList({ ...historyList, [currentPage]: history });
-      })
-      .catch((error) => {
-        console.error("Error fetching personas:", error);
-      });
-  }, [currentPage]);
+      } catch (error: any) {
+        console.error("Error fetching historial:", error);
+
+        if (error.response?.status === 401) {
+          // Token expirado o inválido
+          router.push("/auth/login");
+        } else {
+          setError("Error al cargar el historial");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistorial();
+  }, [currentPage, limit, router]);
 
   const goToPrevious = () => {
     if (currentPage > 1) {
@@ -49,6 +78,30 @@ export default function History() {
       minute: "2-digit",
     });
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">Cargando historial...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  if (!historyList[currentPage]) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-gray-500">No hay datos de historial disponibles</div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-6 py-8 max-w-6xl">
