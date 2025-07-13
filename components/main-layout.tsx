@@ -2,8 +2,9 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { cn, getLocalStorage } from "@/lib/utils";
-import { Clock, GalleryThumbnailsIcon as Gallery, Home, Menu, Moon, Sun, User, X } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { cn, getLocalStorage, removeLocalStorage } from "@/lib/utils";
+import { Clock, GalleryThumbnailsIcon as Gallery, Home, LogOut, Menu, Moon, Sun, User, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -39,12 +40,6 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
 
   const navigationItems = [
     {
-      id: "profile",
-      label: "Mi Perfil",
-      icon: User,
-      path: "/perfil",
-    },
-    {
       id: "gallery",
       label: "Galería de Personajes",
       icon: Gallery,
@@ -60,6 +55,13 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
 
   const handleNavigation = (path: string) => {
     router.push(path);
+  };
+
+  const handleLogout = () => {
+    // Limpiar datos de autenticación
+    removeLocalStorage("auth");
+    // Redirigir al login
+    router.push("/auth/login");
   };
 
   return (
@@ -165,10 +167,25 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
                     <p className="text-sm text-muted-foreground">Fan de Star Wars</p>
                   </div>
 
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src="/placeholder.svg?height=48&width=48" alt="Perfil" />
-                    <AvatarFallback>AR</AvatarFallback>
-                  </Avatar>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Avatar className="h-12 w-12 cursor-pointer">
+                        <AvatarImage src="/placeholder.svg?height=48&width=48" alt="Perfil" />
+                        <AvatarFallback>AR</AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => handleNavigation("/perfil")} className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Mi Perfil
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Cerrar Sesión
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             </header>
