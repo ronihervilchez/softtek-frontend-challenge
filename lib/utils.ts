@@ -7,23 +7,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function setLocalStorage(key: string, value: string) {
+export function setSessionStorage(key: string, value: string) {
   if (typeof window !== "undefined") {
     try {
       const valueEncripted = CryptoJS.AES.encrypt(value, AppConfig.ENCRYPTED_KEY).toString();
-      localStorage.setItem(key, valueEncripted);
+      sessionStorage.setItem(key, valueEncripted);
     } catch (error) {
       console.error("Error al encriptar:", error);
       // Fallback: guardar sin encriptar
-      localStorage.setItem(key, value);
+      sessionStorage.setItem(key, value);
     }
   }
 }
 
-export function getLocalStorage(key: string): string | null {
+export function getSessionStorage(key: string): string | null {
   if (typeof window !== "undefined") {
     try {
-      const encriptedValue = localStorage.getItem(key);
+      const encriptedValue = sessionStorage.getItem(key);
       if (!encriptedValue) {
         return null;
       }
@@ -36,7 +36,7 @@ export function getLocalStorage(key: string): string | null {
       if (!decriptedValue) {
         console.warn("No se pudo desencriptar el valor, posible dato corrupto");
         // Limpiar el valor corrupto
-        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
         return null;
       }
 
@@ -44,33 +44,33 @@ export function getLocalStorage(key: string): string | null {
     } catch (error) {
       console.error("Error al desencriptar:", error);
       // Limpiar el valor corrupto y devolver null
-      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
       return null;
     }
   }
   return null;
 }
 
-export function removeLocalStorage(key: string) {
+export function removeSessionStorage(key: string) {
   if (typeof window !== "undefined") {
-    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
   }
 }
 
 // Función auxiliar para limpiar todos los datos corruptos
-export function clearCorruptedLocalStorage() {
+export function clearCorruptedSessionStorage() {
   if (typeof window !== "undefined") {
-    const keys = Object.keys(localStorage);
+    const keys = Object.keys(sessionStorage);
     keys.forEach((key) => {
       try {
-        const value = localStorage.getItem(key);
+        const value = sessionStorage.getItem(key);
         if (value) {
           // Intentar desencriptar para verificar si está corrupto
           CryptoJS.AES.decrypt(value, AppConfig.ENCRYPTED_KEY).toString(CryptoJS.enc.Utf8);
         }
       } catch (error) {
         console.warn(`Removiendo dato corrupto: ${key}`);
-        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
       }
     });
   }
@@ -79,14 +79,14 @@ export function clearCorruptedLocalStorage() {
 export function getAuthToken(): string | null {
   if (typeof window !== "undefined") {
     try {
-      const authData = getLocalStorage("auth");
+      const authData = getSessionStorage("auth");
       if (authData) {
         const parsed = JSON.parse(authData);
         return parsed.data?.token ?? null;
       }
     } catch (error) {
       console.error("Error parsing auth data:", error);
-      removeLocalStorage("auth");
+      removeSessionStorage("auth");
     }
   }
   return null;

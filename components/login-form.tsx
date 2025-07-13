@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn, setLocalStorage } from "@/lib/utils";
+import { cn, setSessionStorage } from "@/lib/utils";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -53,7 +53,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                     })
                     .then((response) => {
                       if (response.data) {
-                        setLocalStorage("auth", JSON.stringify(response.data));
+                        setSessionStorage("auth", JSON.stringify(response.data));
                         router.push("/personajes");
                       } else {
                         alert("Login failed: " + response.data.message);

@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { cn, getLocalStorage, removeLocalStorage } from "@/lib/utils";
+import { cn, getSessionStorage, removeSessionStorage } from "@/lib/utils";
 import { Clock, GalleryThumbnailsIcon as Gallery, Home, LogOut, Menu, Moon, Sun, User, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getLocalStorage("auth");
+    const auth = getSessionStorage("auth");
     router.push(auth ? "/personajes" : "/auth/login");
     if (auth) setLoading(false);
   }, [router]);
@@ -59,7 +59,7 @@ export default function MainLayout({ children }: Readonly<MainLayoutProps>) {
 
   const handleLogout = () => {
     // Limpiar datos de autenticación
-    removeLocalStorage("auth");
+    removeSessionStorage("auth");
     // Redirigir al login
     router.push("/auth/login");
   };
