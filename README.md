@@ -79,7 +79,7 @@ softtek-frontend-challenge/
 │
 ├── 📂 components/                  # Componentes reutilizables
 │   ├── 📄 login-form.tsx           # Formulario de login
-│   ├── 📄 main-layout.tsx          # Layout principal
+│   ├── 📄 main-layout.tsx          # Layout principal con sidebar y menú de usuario
 │   ├── 📄 people-list.tsx          # Lista de personajes
 │   ├── 📄 profile-section.tsx      # Sección de perfil
 │   ├── 📄 singup-form.tsx          # Formulario de registro
@@ -91,6 +91,7 @@ softtek-frontend-challenge/
 │       ├── 📄 card.tsx             # Componente Card
 │       ├── 📄 badge.tsx            # Componente Badge
 │       ├── 📄 dialog.tsx           # Componente Dialog
+│       ├── 📄 dropdown-menu.tsx    # Componente DropdownMenu (menú de usuario)
 │       ├── 📄 toast.tsx            # Componente Toast
 │       └── ... (30+ componentes)
 │
@@ -215,6 +216,8 @@ NODE_ENV=production
 - Gestión segura de tokens JWT
 - Redirección automática en rutas protegidas
 - Encriptación de datos en cliente
+- **Menú de usuario** con dropdown en el avatar
+- **Cierre de sesión** seguro desde el menú de usuario
 
 ### 👥 Gestión de Personajes
 - Galería visual de personajes de Star Wars
@@ -230,10 +233,38 @@ NODE_ENV=production
 
 ### 🎨 Interfaz de Usuario
 - Diseño responsive para todos los dispositivos
-- Tema claro/oscuro
+- Tema claro/oscuro con toggle en el header
 - Componentes reutilizables con shadcn/ui
 - Animaciones y transiciones suaves
 - Estados de carga y error
+- **Sidebar colapsible** para navegación principal
+- **Menú desplegable de usuario** en el avatar con:
+  - Acceso rápido al perfil
+  - Opción de cerrar sesión
+  - Iconos intuitivos para cada acción
+  - Diseño elegante con separadores
+
+### 🗺️ Navegación y UX
+- **Header dinámico** que cambia según la sección activa
+- **Sidebar navegación** con indicadores visuales de sección activa
+- **Breadcrumbs** implícitos en títulos y descripciones
+- **Menú de usuario** accesible desde cualquier página autenticada
+- **Logout seguro** que limpia completamente la sesión y redirige al login
+
+### 🎛️ Componentes UI Destacados
+- **DropdownMenu**: Menú desplegable del avatar de usuario
+  - Trigger en el avatar con cursor pointer
+  - Opciones: "Mi Perfil" y "Cerrar Sesión"
+  - Iconos lucide-react para mejor UX
+  - Alineación automática y responsive
+  - Colores diferenciados (rojo para logout)
+- **Sidebar**: Navegación principal colapsible
+  - Estados activos visuales
+  - Botones de toggle con iconos
+  - Transiciones suaves
+- **Theme Toggle**: Switch entre modo claro/oscuro
+  - Iconos animados (Sol/Luna)
+  - Persistencia de preferencia
 
 ## 🧪 Testing
 
